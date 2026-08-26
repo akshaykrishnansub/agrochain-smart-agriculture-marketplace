@@ -4,6 +4,8 @@ import { createUser, findUserByEmail } from "../services/userService.js";
 import User from "../models/User.js";
 import jwt from 'jsonwebtoken'
 
+
+
 export const register=async(req:Request,res:Response)=>{
     try{
         const {name,email,password}=req.body;
@@ -47,6 +49,13 @@ export const login=async(req:Request,res:Response)=>{
         }
 
         const token=jwt.sign({userId:user._id,role:user.role},process.env.JWT_SECRET!,{expiresIn:'1d'});
+
+        res.cookie('token',token,{
+            httpOnly:true,
+            secure:false,
+            sameSite:'lax',
+            maxAge:1*24*60*60*1000
+        })
 
         return res.status(200).json({message:'Login Successful',accessToken:token,user:{
             id:user._id,
