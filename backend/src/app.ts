@@ -5,6 +5,7 @@ import "dotenv/config"
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js'
 import cookieParser from 'cookie-parser'
+import productRoutes from './routes/productRoutes.js'
 
 const app:Application=express();
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use('/api/auth',authRoutes)
+app.use('/api/products',productRoutes)
 
 app.get("/",(req,res)=>{
     res.json({
