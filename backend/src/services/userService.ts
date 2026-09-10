@@ -13,4 +13,22 @@ const createUser=async(userData:{
     return await User.create(userData);
 }
 
-export {findUserByEmail,createUser};
+const getUserById=async(userId:string)=>{
+    return await User.findById(userId).select("-passwordHash");
+}
+
+const updateUser=async(userId:string,userData:{
+    name?:string,
+    email?:string
+})=>{
+    return await User.findByIdAndUpdate(
+        userId,
+        userData,
+        {
+            new:true,
+            runValidators:true
+        }
+    ).select("-passwordHash");
+}
+
+export {findUserByEmail,createUser,getUserById,updateUser};

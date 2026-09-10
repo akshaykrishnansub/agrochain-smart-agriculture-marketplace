@@ -8,6 +8,7 @@ images?:string[];
 ownerId:string;
 category:string;
 certifications:string[];
+stock:number;
 })=>{
     return await Product.create(productData);
 }
@@ -20,7 +21,8 @@ const updateProduct=async(productId:string,
         price?:number;
         category?:string;
         images?:string[];
-        certifications?:string[]
+        certifications?:string[],
+        stock?:number
     }
 )=>{
     return await Product.findByIdAndUpdate({_id:productId,ownerId:ownerId,},productData,{new:true, runValidators:true});

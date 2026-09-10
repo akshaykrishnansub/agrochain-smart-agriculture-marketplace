@@ -4,9 +4,9 @@ import { createProduct,deleteProduct,getAllProducts,updateProduct } from "../ser
 
 export const createProductController=async(req:AuthRequest,res:Response)=>{
     try{
-        const {name,description,price,category,images,certifications}=req.body;
-        if(!name||!description||price===undefined||!category){
-           return res.status(400).json({message:'Name,Description,pice and category are required'});
+        const {name,description,price,category,images,certifications,stock}=req.body;
+        if(!name||!description||price===undefined||!category||stock===undefined){
+           return res.status(400).json({message:'Name,Description,price,stock and category are required'});
         }
 
         if(!req.user){
@@ -20,7 +20,8 @@ export const createProductController=async(req:AuthRequest,res:Response)=>{
             category,
             images,
             certifications,
-            ownerId:req.user.userId
+            ownerId:req.user.userId,
+            stock
         })
 
         return res.status(201).json({message:'Product created successfully',product})

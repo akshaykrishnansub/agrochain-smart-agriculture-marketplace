@@ -35,7 +35,11 @@ const productSchema=new Schema(
             type:[String],
             default:[]
         },
-        
+        stock:{
+            type:Number,
+            required:true,
+            min:0
+        }
     },
     {
         timestamps:true
