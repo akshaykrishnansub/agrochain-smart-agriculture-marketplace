@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js'
 import cookieParser from 'cookie-parser'
 import productRoutes from './routes/productRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
+import uploadRoutes from './routes/fileRoutes.js'
 
 const app:Application=express();
 
@@ -17,6 +18,7 @@ app.use(cookieParser());
 app.use('/api/auth',authRoutes)
 app.use('/api/products',productRoutes)
 app.use('/api/orders',orderRoutes)
+app.use('/api/upload',uploadRoutes)
 
 app.get("/",(req,res)=>{
     res.json({
