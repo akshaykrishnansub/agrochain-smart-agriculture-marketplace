@@ -1,6 +1,6 @@
 import type { AuthRequest } from "../middleware/auth.middleware.js";
 import type { Response } from "express";
-import { getUserById, updateUser } from "../services/userService.js";
+import { addCertification, getUserById, updateUser } from "../services/userService.js";
 
 export const getProfile=async(req:AuthRequest,res:Response)=>{
     try{
@@ -36,6 +36,34 @@ export const updateProfile=async(req:AuthRequest,res:Response)=>{
         }
 
         return res.status(200).json({message:'Profile updated successfully'});
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:'Internal Server Error'});
+    }
+}
+
+export const addCertificationController=async(req:AuthRequest,res:Response)=>{
+    try{
+        if(!req.user){
+            return res.status(401).json({message:'Authentication Required'});
+        }
+        const {id}=req.params;
+        const {certificationUrl}=req.body;
+
+        if(req.user.userId!==id){
+            return res.status(403).json({message:"You can update only your own certification"});
+        }
+
+        if(!certificationUrl){
+            return res.status(400).json({message:'Certification URL is required'});
+        }
+
+        const user=await addCertification(id,certificationUrl);
+        if(!user){
+            return res.status(404).json({message:'User not found'});
+        }
+
+        return res.status(200).json({message:'Certification uploaded successfully'});
     }catch(err){
         console.error(err);
         return res.status(500).json({message:'Internal Server Error'});

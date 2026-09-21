@@ -31,4 +31,18 @@ const updateUser=async(userId:string,userData:{
     ).select("-passwordHash");
 }
 
-export {findUserByEmail,createUser,getUserById,updateUser};
+const addCertification=async(userId:string,certificationUrl:string)=>{
+    return await User.findByIdAndUpdate(
+        userId,
+        {
+            $push:{
+                certifications:certificationUrl
+            }
+        },
+        {
+            new:true
+        }
+    ).select("-passwordHash");
+}
+
+export {findUserByEmail,createUser,getUserById,updateUser,addCertification};
