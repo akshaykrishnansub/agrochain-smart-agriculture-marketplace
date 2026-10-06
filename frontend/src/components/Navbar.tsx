@@ -14,7 +14,7 @@ const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps)
         <h1 className="text-2xl font-bold text-white">
             Agro<span className="text-green-300">Chain</span>
         </h1>
-        <div className="gap-4 mr-auto">
+        <div className="flex gap-4 mr-auto">
             {leftSlot}
         </div>
       {/*RIGHT SLOT */}
