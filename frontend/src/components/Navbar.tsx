@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useNavigate } from "react-router";
 
 interface NavbarProps{
     leftSlot?:React.ReactNode;
@@ -8,6 +9,7 @@ interface NavbarProps{
     title?:string;
 }
 const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps) => {
+  const navigate=useNavigate();
   return (
     <nav className="flex justify-center items-center bg-green-900 p-4 top-0 h-16 left-0 w-full">
       {/*LEFT SLOT */}
@@ -20,10 +22,10 @@ const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps)
       {/*RIGHT SLOT */}
       <div className="flex items-center gap-2">
         {showLogin && (
-          <p className="text-white font-semibold text-sm">Login</p>
+          <Link to="/login" className="text-white font-semibold text-sm">Login</Link>
         )}
         {showSignup && (
-          <button className="bg-blue-800 font-semibold p-2 rounded text-white cursor-pointer hover:bg-blue-600">Register</button>
+          <button type="button" onClick={()=>navigate("/register")} className="bg-blue-800 font-semibold p-2 rounded text-white cursor-pointer hover:bg-blue-600">Register</button>
         )}
         {rightSlot?rightSlot:null}
       </div>
