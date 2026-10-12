@@ -61,7 +61,7 @@ const Login = () => {
             value={formData.email}
             onChange={handleChange}
             placeholder="Enter your email here" 
-            className="w-full p-2 border rounded-lg" />
+            className="w-full p-2 border rounded-lg" required />
           </div>
           <div className="mt-4">
             <label htmlFor="password" className="font-semibold">Password</label>
@@ -71,10 +71,10 @@ const Login = () => {
             value={formData.password}
             onChange={handleChange}
             placeholder="Enter your password here" 
-            className="w-full p-2 border rounded-lg" />
+            className="w-full p-2 border rounded-lg"  required/>
           </div>
           <div className="mt-4">
-            <button className="w-full bg-green-900 p-2 rounded text-white hover:bg-green-800 cursor-pointer">Login</button>
+            <button type='submit' className="w-full bg-green-900 p-2 rounded text-white hover:bg-green-800 cursor-pointer">Login</button>
           </div>
         </form>
         <p className="text-center mt-2">Don't have an account yet? <Link to="/register" className="text-green-600 underline">Click here to Sign Up</Link></p>

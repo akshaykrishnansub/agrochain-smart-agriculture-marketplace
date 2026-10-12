@@ -63,7 +63,7 @@ const Register = () => {
            onChange={handleChange}
            value={formData.name}
            placeholder="Enter your name here" 
-           className="w-full p-2 border rounded-lg" />
+           className="w-full p-2 border rounded-lg" required />
         </div>
         <div className="mt-4">
           <label htmlFor="email" className="font-semibold">Email</label>
@@ -73,7 +73,7 @@ const Register = () => {
           onChange={handleChange}
           value={formData.email}
           placeholder="Enter your email here" 
-          className="w-full p-2 border rounded-lg" />
+          className="w-full p-2 border rounded-lg" required/>
         </div>
         <div className="mt-4">
           <label htmlFor="password" className="font-semibold">Password</label>
@@ -83,7 +83,7 @@ const Register = () => {
           placeholder="Enter your email here" 
           onChange={handleChange}
           value={formData.password}
-          className="w-full p-2 border rounded-lg" />
+          className="w-full p-2 border rounded-lg" required/>
         </div>
         <div className="mt-4">
           <label htmlFor="confirmPassword" className="font-semibold">Confirm Password</label>
@@ -93,10 +93,10 @@ const Register = () => {
           onChange={handleChange}
           value={formData.confirmPassword}
           placeholder="Confirm your password here" 
-          className="w-full p-2 border rounded-lg" />
+          className="w-full p-2 border rounded-lg" required/>
         </div>
         <div className="mt-4">
-          <button className="w-full bg-green-900 p-2 rounded text-white hover:bg-green-800 cursor-pointer">Click here to Register</button>
+          <button type="submit" className="w-full bg-green-900 p-2 rounded text-white hover:bg-green-800 cursor-pointer">Click here to Register</button>
         </div>
         </form>
         <p className="text-center mt-4">Already have an account? <Link to="/login" className="text-green-600 underline">Click here to Login</Link></p>
