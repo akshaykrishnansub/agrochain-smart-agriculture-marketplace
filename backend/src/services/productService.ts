@@ -32,8 +32,12 @@ const getAllProducts=async()=>{
     return await Product.find();
 }
 
+const getProductById=async(productId:string)=>{
+    return await Product.findById(productId);
+}
+
 const deleteProduct=async(productId:string,ownerId:string)=>{
     return await Product.findOneAndDelete({_id:productId,ownerId:ownerId})
 }
 
-export {createProduct,updateProduct,getAllProducts,deleteProduct};
+export {createProduct,updateProduct,getAllProducts,deleteProduct,getProductById};

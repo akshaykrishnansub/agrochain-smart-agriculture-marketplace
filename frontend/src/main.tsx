@@ -7,8 +7,10 @@ import Home from './pages/Home.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
 import Products from './pages/Products.tsx'
+import ProductDetails from './pages/ProductDetails.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 import ProtectedRoute from './components/ProtectedRoute.tsx'
+import Orders from './pages/Orders.tsx'
 
 const router=createBrowserRouter([
   {
@@ -17,13 +19,14 @@ const router=createBrowserRouter([
     children:[
       {path:"/",element:<Home />},
       {path:"login",element:<Login/>},
-      {path:"register",element:<Register />},
-      {path:"products",element:(
-      <ProtectedRoute>
-        <Products />
+      {path:"register",element:<Register/>},
+      {path:"products",element:<Products/>},
+      {path:"products/:id",element:<ProductDetails/>},
+      {path:"/orders",element:(
+        <ProtectedRoute>
+          <Orders />
         </ProtectedRoute>
-      )
-      }
+      )}
     ]
   }
 ])
