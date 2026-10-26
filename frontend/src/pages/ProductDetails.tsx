@@ -97,7 +97,7 @@ const ProductDetails = () => {
           <div>
             {product.images[0]?(
             <div className="mt-4 p-8">
-              <img src={product.images[0]} alt={product.name} className="h-150 w-200"/>
+              <img src={product.images[0]} alt={product.name} className="h-150 w-200 rounded-lg"/>
             </div>
           ):(
             <div>
@@ -105,7 +105,7 @@ const ProductDetails = () => {
             </div>
           )}
           </div>
-          <div className="p-12">
+          <div className="p-12 bg-white m-12 border rounded-lg">
             <h1 className="text-3xl font-bold">Product Details</h1>
             <p className="mt-4 text-xl"><span className="text-2xl font-semibold">Product Name:{" "}</span>{product.name}</p>
             <p className="mt-4 text-xl"><span className="text-2xl font-semibold">Product Description:{" "}</span>{product.description}</p>
@@ -119,7 +119,7 @@ const ProductDetails = () => {
               <p>{quantity}</p>
               <button type="button" disabled={quantity>=product.stock} onClick={increaseQuantity} className="bg-blue-900 text-white font-bold p-2 disabled:opacity-50">+</button>
             </div>
-            <button onClick={handlePlaceOrder} className="bg-blue-950 text-white font-bold p-2 rounded-lg mt-5">Place Order</button>
+            <button onClick={handlePlaceOrder} className="bg-blue-950 hover:bg-blue-800 cursor-pointer text-white font-bold p-2 rounded-lg mt-5">Place Order</button>
           </div>
         </div>
       )}

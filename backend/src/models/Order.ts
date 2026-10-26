@@ -33,6 +33,11 @@ const orderSchema=new Schema({
     },
     paymentInfo:{
         type:Schema.Types.Mixed
+    },
+    stripeSessionId:{
+        type:String,
+        unique:true,
+        sparse:true
     }
 },
 {timestamps:true}

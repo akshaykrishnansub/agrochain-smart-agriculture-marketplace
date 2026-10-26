@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Footer from "../components/Footer";
 
 interface Product{
   _id:string;
@@ -87,6 +88,7 @@ const Products = () => {
         <Navbar showLogin={false} showSignup={false}/>
       ):(<Navbar />)}
     </main>
+    <Footer/>
     </>
   )
 }

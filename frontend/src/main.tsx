@@ -11,6 +11,7 @@ import ProductDetails from './pages/ProductDetails.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 import ProtectedRoute from './components/ProtectedRoute.tsx'
 import Orders from './pages/Orders.tsx'
+import Checkout from './pages/Checkout.tsx'
 
 const router=createBrowserRouter([
   {
@@ -25,6 +26,11 @@ const router=createBrowserRouter([
       {path:"/orders",element:(
         <ProtectedRoute>
           <Orders />
+        </ProtectedRoute>
+      )},
+      {path:"/checkout",element:(
+        <ProtectedRoute>
+          <Checkout />
         </ProtectedRoute>
       )}
     ]

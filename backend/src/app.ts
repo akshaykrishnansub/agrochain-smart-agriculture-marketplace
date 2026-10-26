@@ -11,12 +11,15 @@ import productRoutes from './routes/productRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import uploadRoutes from './routes/fileRoutes.js'
 import userRoutes from './routes/userRoutes.js'
+import stripeWebhookRoutes from './routes/stripeWebhookRoutes.js'
 
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
 
 const app:Application=express();
 const frontendPath=path.resolve(__dirname,'../../frontend/dist');
+
+app.use('/api/stripe',stripeWebhookRoutes);
 
 app.use(express.json());
 app.use(cors({
