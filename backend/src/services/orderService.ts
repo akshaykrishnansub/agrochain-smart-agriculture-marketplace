@@ -39,7 +39,7 @@ const createOrder=async(
 
 const getOrders=async(userId:string,role:string)=>{
     if(role==="buyer"){
-        return await Order.find({buyerId:userId});
+        return await Order.find({buyerId:userId}).populate("productId","name images category");
     }
     if(role==="farmer" || role==="supplier"){
         const products=await Product.find({
@@ -50,11 +50,11 @@ const getOrders=async(userId:string,role:string)=>{
 
         return await Order.find({
             productId:{$in:productIds}
-        })
+        }).populate("productId","name images category price stock");
     }
 
     if(role==="admin"){
-        return await Order.find();
+        return await Order.find().populate("productId","name images category price stock");
     }
 
     return [];

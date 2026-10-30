@@ -12,6 +12,8 @@ import { AuthProvider } from './context/AuthContext.tsx'
 import ProtectedRoute from './components/ProtectedRoute.tsx'
 import Orders from './pages/Orders.tsx'
 import Checkout from './pages/Checkout.tsx'
+import MyOrders from './pages/MyOrders.tsx'
+import ReceivedOrders from './pages/ReceivedOrders.tsx'
 
 const router=createBrowserRouter([
   {
@@ -31,6 +33,17 @@ const router=createBrowserRouter([
       {path:"/checkout",element:(
         <ProtectedRoute>
           <Checkout />
+        </ProtectedRoute>
+      )},
+      {path:"/my-orders",element:(
+        <ProtectedRoute>
+          <MyOrders/>
+        </ProtectedRoute>
+      )},
+
+      {path:"/received-orders",element:(
+        <ProtectedRoute allowedRoles={["farmer","supplier"]}>
+          <ReceivedOrders />
         </ProtectedRoute>
       )}
     ]

@@ -151,7 +151,7 @@ const Checkout = () => {
         <div className="bg-white mx-auto mt-8 max-w-lg rounded-lg p-8 text-center shadow-lg">
           <h2 className="text-2xl font-bold text-green-900">Payment Successful</h2>
           <p className="mt-4 font-semibold">Your payment has been verified and your order has been confirmed</p>
-          <button onClick={()=>navigate("/orders")} className="mt-4 rounded bg-blue-950 p-2 text-white hover:bg-blue-800 cursor-pointer">View My Orders</button>
+          <button onClick={()=>navigate("/my-orders")} className="mt-4 rounded bg-blue-950 p-2 text-white hover:bg-blue-800 cursor-pointer">View My Orders</button>
         </div>
       )}
 
@@ -159,7 +159,7 @@ const Checkout = () => {
         <div className="mt-8 text-center">
           <p>Your payment was completed, but your order was not confirmed.</p>
           <p className="mt-2">Please check My Orders in a moment</p>
-          <button onClick={()=>navigate("/orders")} className="mt-4 rounded bg-blue-950 p-2 text-white hover:bg-blue-800 cursor-pointer">View My Orders</button>
+          <button onClick={()=>navigate("/my-orders")} className="mt-4 rounded bg-blue-950 p-2 text-white hover:bg-blue-800 cursor-pointer">View My Orders</button>
         </div>
       )}
 
@@ -174,7 +174,7 @@ const Checkout = () => {
       {paymentReturnStatus==="failed" && (
         <div className="mt-8 text-center">
           <p>We couldn't verify your payment right now.</p>
-          <button onClick={()=>navigate("/orders")} className="mt-4 rounded bg-blue-950 text-white hover:bg-blue-800 cursor-pointer">View My Orders</button>
+          <button onClick={()=>navigate("/my-orders")} className="mt-4 rounded bg-blue-950 text-white hover:bg-blue-800 cursor-pointer">View My Orders</button>
         </div>
       )}
       
