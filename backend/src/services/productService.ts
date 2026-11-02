@@ -1,3 +1,4 @@
+import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 
 const createProduct=async(productData:{
@@ -36,8 +37,29 @@ const getProductById=async(productId:string)=>{
     return await Product.findById(productId);
 }
 
+const getMyProducts=async(ownerId:string)=>{
+    return await Product.find({ownerId:ownerId});
+}
+
 const deleteProduct=async(productId:string,ownerId:string)=>{
+    const product=await Product.findOne({
+        _id:productId,
+        ownerId:ownerId
+    })
+
+    if(!product){
+        throw new Error("Product not found");
+    }
+
+    const existingOrder=await Order.exists({
+        productId:productId
+    })
+
+    if(existingOrder){
+        throw new Error("Cannot delete the product because orders already exist on this product");
+    }
+
     return await Product.findOneAndDelete({_id:productId,ownerId:ownerId})
 }
 
-export {createProduct,updateProduct,getAllProducts,deleteProduct,getProductById};
+export {createProduct,updateProduct,getAllProducts,deleteProduct,getProductById,getMyProducts};

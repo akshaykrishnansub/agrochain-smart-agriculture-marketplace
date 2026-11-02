@@ -1,6 +1,6 @@
 import type { AuthRequest } from "../middleware/auth.middleware.js";
 import type {Request,Response} from 'express'
-import { createProduct,deleteProduct,getAllProducts,getProductById,updateProduct } from "../services/productService.js";
+import { createProduct,deleteProduct,getAllProducts,getMyProducts,getProductById,updateProduct } from "../services/productService.js";
 
 export const createProductController=async(req:AuthRequest,res:Response)=>{
     try{
@@ -73,6 +73,21 @@ export const getAllProductsController=async(req:Request,res:Response)=>{
     }catch(err){
         console.error(err);
         return res.status(500).json({message:'Internal Server Error'});
+    }
+}
+
+export const getMyProductsController=async(req:AuthRequest,res:Response)=>{
+    try{
+        if(!req.user){
+            return res.status(401).json({message:"Authentication Required"});
+        }
+
+        const products=await getMyProducts(req.user.userId);
+
+        return res.status(200).json({products});
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:"Internal Server Error"});
     }
 }
 

@@ -14,6 +14,7 @@ import Orders from './pages/Orders.tsx'
 import Checkout from './pages/Checkout.tsx'
 import MyOrders from './pages/MyOrders.tsx'
 import ReceivedOrders from './pages/ReceivedOrders.tsx'
+import MyProducts from './pages/MyProducts.tsx'
 
 const router=createBrowserRouter([
   {
@@ -44,6 +45,12 @@ const router=createBrowserRouter([
       {path:"/received-orders",element:(
         <ProtectedRoute allowedRoles={["farmer","supplier"]}>
           <ReceivedOrders />
+        </ProtectedRoute>
+      )},
+
+      {path:"/my-products",element:(
+        <ProtectedRoute allowedRoles={["farmer","supplier"]}>
+          <MyProducts />
         </ProtectedRoute>
       )}
     ]
