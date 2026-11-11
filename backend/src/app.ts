@@ -12,6 +12,7 @@ import orderRoutes from './routes/orderRoutes.js'
 import uploadRoutes from './routes/fileRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import stripeWebhookRoutes from './routes/stripeWebhookRoutes.js'
+import adminRoutes from './routes/adminRoutes.js'
 
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
@@ -33,6 +34,7 @@ app.use('/api/products',productRoutes)
 app.use('/api/orders',orderRoutes)
 app.use('/api/upload',uploadRoutes)
 app.use('/api/users',userRoutes);
+app.use('/api/admin',adminRoutes);
 
 app.use(express.static(frontendPath));
 

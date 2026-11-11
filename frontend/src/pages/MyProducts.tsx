@@ -120,6 +120,7 @@ const MyProducts = () => {
                 }
             }
 
+            console.log(formData.certifications);
             //Upload only selected certifications
             if(formData.certifications.length>0){
                 for(const certification of formData.certifications){
@@ -158,6 +159,8 @@ const MyProducts = () => {
                   certifications:certificationUrls.length>0?certificationUrls:editingProduct.certifications
                 })
             })
+
+            console.log(certificationUrls);
 
             const data=await res.json();
             if(!res.ok){
@@ -459,6 +462,7 @@ const MyProducts = () => {
                             <input type="file"
                             name="certifications"
                             accept="application/pdf"
+                            onChange={handleFileChange}
                             multiple
                             className="w-full p-2 border border-green-950"
                             />

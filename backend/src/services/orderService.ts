@@ -54,7 +54,7 @@ const getOrders=async(userId:string,role:string)=>{
     }
 
     if(role==="admin"){
-        return await Order.find().populate("productId","name images category price stock");
+        return await Order.find().populate("productId","name images category price stock").populate("buyerId","name email");
     }
 
     return [];
