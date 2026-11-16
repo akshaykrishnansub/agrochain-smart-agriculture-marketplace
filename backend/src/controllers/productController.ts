@@ -4,9 +4,9 @@ import { createProduct,deleteProduct,getAllProducts,getMyProducts,getProductById
 
 export const createProductController=async(req:AuthRequest,res:Response)=>{
     try{
-        const {name,description,price,category,images,certifications,stock}=req.body;
-        if(!name||!description||price===undefined||!category||stock===undefined){
-           return res.status(400).json({message:'Name,Description,price,stock and category are required'});
+        const {name,description,price,category,images,certifications,location,stock}=req.body;
+        if(!name||!description||price===undefined||!category||stock===undefined||!location){
+           return res.status(400).json({message:'Name,Description,price,stock,location and category are required'});
         }
 
         if(!req.user){
@@ -20,6 +20,7 @@ export const createProductController=async(req:AuthRequest,res:Response)=>{
             category,
             images,
             certifications,
+            location,
             ownerId:req.user.userId,
             stock
         })
@@ -68,7 +69,8 @@ export const updateProductController=async(req:AuthRequest,res:Response)=>{
 
 export const getAllProductsController=async(req:Request,res:Response)=>{
     try{
-        const products=await getAllProducts();
+        const {search,location,certification,minPrice,maxPrice}=req.query;
+        const products=await getAllProducts(search as string,location as string,certification as string,minPrice as string,maxPrice as string);
         return res.status(200).json({products})
     }catch(err){
         console.error(err);

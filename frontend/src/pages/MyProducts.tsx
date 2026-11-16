@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthContext";
      images:string[];
      certifications:string[];
      category:string;
+     location:string;
      stock:number;
  }
 
@@ -28,6 +29,7 @@ const MyProducts = () => {
         description:"",
         price:"",
         category:"",
+        location:"",
         stock:"0",
         images:[] as File[],
         certifications:[] as File[]
@@ -41,6 +43,7 @@ const MyProducts = () => {
             description:product.description,
             stock:String(product.stock),
             category:product.category,
+            location:product.location || "",
             price:String(product.price),
             images:[],
             certifications:[]
@@ -154,6 +157,7 @@ const MyProducts = () => {
                   description:formData.description,
                   price:Number(formData.price),
                   category:formData.category,
+                  location:formData.location,
                   stock:Number(formData.stock),
                   images:imageUrls.length>0?imageUrls:editingProduct.images,
                   certifications:certificationUrls.length>0?certificationUrls:editingProduct.certifications
@@ -238,6 +242,7 @@ const MyProducts = () => {
                 description:"",
                 price:"",
                 category:"",
+                location:"",
                 stock:"0",
                 images:[],
                 certifications:[]
@@ -303,6 +308,7 @@ const MyProducts = () => {
                         <div className="p-5">
                             <p className="mt-1"><span className="font-bold">Product Name:{" "}</span>{product.name}</p>
                             <p className="mt-1"><span className="font-bold">Product Category:{" "}</span>{product.category}</p>
+                            <p className="mt-1"><span className="font-bold">Product Location:{" "}</span>{product.location}</p>
                             <p className="mt-1"><span className="font-bold">Product Description:{" "}</span>{product.description}</p>
                             <p className="mt-1"><span className="font-bold">Product Price:{" "}</span>₹ {product.price.toFixed(2)}</p>
                             <p className="mt-1"><span className="font-bold">Product Stock:{" "}</span>{product.stock}</p>
@@ -361,6 +367,15 @@ const MyProducts = () => {
                             onChange={handleChange}
                             name="category" className="w-full border border-green-900 rounded p-2" required />
                         </div>
+                        <div className="mt-4">
+                            <label htmlFor="productName" className="font-semibold">Product Location:</label>
+                            <input type="text" 
+                            name="location" 
+                            placeholder="Enter your product origin city"
+                            value={formData.location}
+                            onChange={handleChange}
+                            className="w-full p-2 rounded border border-green-900" required/>
+                        </div>
                         <div className="mt-2">
                             <label htmlFor="stock" className="font-bold">Stock:</label>
                             <input type="number"
@@ -408,11 +423,11 @@ const MyProducts = () => {
                             placeholder="Enter the product name" 
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full p-2 border border-green-950" />
+                            className="w-full p-2 border border-green-950" required/>
                         </div>
                         <div className="mt-2">
                             <label htmlFor="description" className="font-bold">Product Description:</label>
-                            <textarea name="description" rows={3} placeholder="Enter a description" value={formData.description} onChange={handleChange} className="w-full p-2 border border-green-950"></textarea>
+                            <textarea name="description" rows={3} placeholder="Enter a description" value={formData.description} onChange={handleChange} className="w-full p-2 border border-green-950" required></textarea>
                         </div>
                         <div>
                             <label htmlFor="price" className="font-bold">Product Price (₹):</label>
@@ -422,6 +437,7 @@ const MyProducts = () => {
                             onChange={handleChange}
                             min={0}
                             className="w-full p-2 border border-green-950"
+                            required
                             />
                         </div>
                         <div className="mt-2">
@@ -432,7 +448,17 @@ const MyProducts = () => {
                             value={formData.category}
                             onChange={handleChange}
                             className="w-full p-2 border border-green-950"
+                            required
                             />
+                        </div>
+                        <div className="mt-2">
+                            <label htmlFor="productName" className="font-semibold">Product Location:</label>
+                            <input type="text" 
+                            name="location" 
+                            placeholder="Enter your product origin city"
+                            value={formData.location}
+                            onChange={handleChange}
+                            className="w-full p-2 rounded border border-green-900" required/>
                         </div>
                         <div className="mt-2">
                             <label htmlFor="stock" className="font-bold">Stock:</label>
@@ -443,6 +469,7 @@ const MyProducts = () => {
                             onChange={handleChange}
                             min={0}
                             className="w-full p-2 border border-green-950"
+                            required
                             />
                         </div>
                         <div className="mt-2">

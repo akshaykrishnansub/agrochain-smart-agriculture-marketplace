@@ -11,6 +11,7 @@ ownerId:string;
 category:string;
 certifications:string[];
 stock:number;
+location:string;
 })=>{
     const product=await Product.create(productData);
 
@@ -36,7 +37,8 @@ const updateProduct=async(productId:string,
         category?:string;
         images?:string[];
         certifications?:string[],
-        stock?:number
+        stock?:number,
+        location?:string
     }
 )=>{
     //Identify the existing product
@@ -74,8 +76,33 @@ const updateProduct=async(productId:string,
     return updatedProduct;
 }
 
-const getAllProducts=async()=>{
-    return await Product.find().populate("ownerId","name email role");
+const getAllProducts=async(search?:string,location?:string,certification?:string,minPrice?:string,maxPrice?:string)=>{
+    const filters:any={};
+
+    if(search){
+        filters.name={$regex:search,$options:"i"};
+    }
+
+    if(location){
+        filters.location={$regex:location,$options:"i"};
+    }
+
+    if(certification){
+        filters.certifications={$regex:certification,$options:"i"};
+    }
+
+    if(minPrice || maxPrice){
+        filters.price={};
+
+        if(minPrice){
+            filters.price.$gte=Number(minPrice);
+        }
+
+        if(maxPrice){
+            filters.price.$lte=Number(maxPrice);
+        }
+    }
+    return await Product.find(filters).populate("ownerId","name email role");
 }
 
 const getProductById=async(productId:string)=>{

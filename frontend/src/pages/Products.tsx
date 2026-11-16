@@ -11,6 +11,7 @@ interface Product{
   price:number;
   images:string[];
   category:string;
+  location:string;
   stock:number;
   certifications:string[];
   ownerId:string;
@@ -22,6 +23,13 @@ const Products = () => {
   const [products,setProducts]=useState<Product[]>([]);
   const [loading,setLoading]=useState<boolean>(true);
   const [error,setError]=useState<string>("");
+
+  const [search,setSearch]=useState<string>("");
+  const [location,setLocation]=useState<string>("");
+  const [certification,setCertification]=useState<string>("");
+  const [minPrice,setMinPrice]=useState<string>("");
+  const [maxPrice,setMaxPrice]=useState<string>("");
+  const [filtersChanged,setFiltersChanged]=useState<boolean>(false);
 
   const {isAuthenticated}=useAuth();
   const navigate=useNavigate();
@@ -45,12 +53,113 @@ const Products = () => {
   fetchProducts();
 },[])
 
+useEffect(()=>{
+  if(!filtersChanged){
+    return;
+  }
+
+  const fetchFilterProducts=async()=>{
+    try{
+      setLoading(true);
+      setError("");
+
+      const params=new URLSearchParams();
+
+      if(search){
+        params.append("search",search);
+      }
+
+      if(location){
+        params.append("location",location);
+      }
+
+      if(certification){
+        params.append("certification",certification);
+      }
+
+      if(minPrice){
+        params.append("minPrice",minPrice);
+      }
+
+      if(maxPrice){
+        params.append("maxPrice",maxPrice);
+      }
+
+      const res=await fetch(`http://localhost:5000/api/products?${params.toString()}`);
+      const data=await res.json();
+
+      if(!res.ok){
+        throw new Error(data.message||"Failed to fetch filtered products");
+      }
+
+      setProducts(data.products);
+
+    }catch(err){
+      setError("Unable to fetch filtered products");
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  fetchFilterProducts();
+},[search,location,certification,minPrice,maxPrice]);
+
   return (
     <>
     <title>AgroChain | Products</title>
     <Navbar/>
     <main className="min-h-screen bg-green-50 px-6 py-8 mt-16">
-      <h1 className="text-3xl font-bold text-center text-green-950">AgroChain Marketplace</h1>
+      <h2 className="text-2xl font-bold text-center mb-2">Search & Filter Products</h2>
+      <div className="bg-white p-8 rounded-lg shadow-lg">
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2">
+          <div>
+            <label htmlFor="searchProduct" className="font-semibold">Search Product:{" "}</label>
+            <input type="text"
+            placeholder="Enter Product name"
+            value={search}
+            onChange={(e)=>{setSearch(e.target.value);setFiltersChanged(true)}}
+            className="w-full border border-green-950 p-1 rounded-lg"
+            />
+          </div>
+          <div>
+            <label htmlFor="location" className="font-semibold">Location:{" "}</label>
+            <input type="text"
+            placeholder="Enter location"
+            value={location}
+            onChange={(e)=>{setLocation(e.target.value);setFiltersChanged(true)}}
+            className="w-full border border-green-950 p-1 rounded-lg"
+            />
+          </div>
+          <div>
+            <label htmlFor="certification" className="font-semibold">Search Certification:{" "}</label>
+            <input type="text"
+            placeholder="Enter filename or keyword"
+            value={certification}
+            onChange={(e)=>{setCertification(e.target.value);setFiltersChanged(true)}}
+            className="w-full border border-green-950 p-1 rounded-lg"
+            />
+          </div>
+          <div>
+            <label htmlFor="minPrice" className="font-semibold">Minimum Price:{" "}</label>
+            <input type="number"
+            placeholder="Enter min Price"
+            value={minPrice}
+            onChange={(e)=>{setMinPrice(e.target.value);setFiltersChanged(true)}}
+            className="w-full border border-green-950 p-1 rounded-lg"
+            />
+          </div>
+          <div>
+            <label htmlFor="maxPrice" className="font-semibold">Maximum Price:{" "}</label>
+            <input type="number"
+            placeholder="Enter max Price"
+            value={maxPrice}
+            onChange={(e)=>{setMaxPrice(e.target.value);setFiltersChanged(true)}}
+            className="w-full border border-green-950 p-1 rounded-lg"
+            />
+          </div>
+        </div>
+      </div>
+      <h1 className="text-3xl font-bold text-center text-green-950 mt-4">AgroChain Marketplace</h1>
       <p className="text-center text-green-900 mt-2">Discover fresh agricultural products from farmers and suppliers</p>
       {loading && (
         <p className="text-center mt-10 text-red-900">Loading Products....</p>

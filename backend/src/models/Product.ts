@@ -31,6 +31,11 @@ const productSchema=new Schema(
             required:true,
             trim:true
         },
+        location:{
+            type:String,
+            required:true,
+            trim:true
+        },
         certifications:{
             type:[String],
             default:[]
