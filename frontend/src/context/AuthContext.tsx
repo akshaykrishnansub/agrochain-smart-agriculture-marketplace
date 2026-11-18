@@ -34,7 +34,7 @@ export const AuthProvider=({children}:{children:ReactNode})=>{
                 }
 
                 const data=await response.json();
-                setUser(data.user);
+                setUser({...data.user,id:data.user._id});
             }catch(err){
                 console.error(err);
             }finally{

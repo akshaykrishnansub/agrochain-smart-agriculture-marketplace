@@ -4,6 +4,8 @@ import stripe from "../config/stripe.js"
 import mongoose from "mongoose";
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
+import { createNotification } from "../services/notificationServices.js";
+import { getIO } from "../config/socket.js";
 
 export const stripeWebhookController=async(req:Request,res:Response)=>{
 
@@ -16,6 +18,8 @@ export const stripeWebhookController=async(req:Request,res:Response)=>{
     }
 
     let event:Stripe.Event;
+
+    let createdNotification:any;
 
     try{
         event=stripe.webhooks.constructEvent(req.body,signature,webhookSecret);
@@ -88,7 +92,7 @@ export const stripeWebhookController=async(req:Request,res:Response)=>{
                 throw new Error("Product not found or insufficient stock");
             }
 
-            await Order.create(
+            const orders=await Order.create(
                 [{
                     buyerId,
                     productId,
@@ -104,7 +108,35 @@ export const stripeWebhookController=async(req:Request,res:Response)=>{
                 }],
                 {session:mongoSession}
             )
+
+            createdNotification=await createNotification(
+                product.ownerId.toString(),
+                "You have received a new order",
+                "ORDER_PLACED",
+                orders[0]!._id.toString(),
+                mongoSession
+            )
         })
+
+        console.log("Created notification:",createdNotification);
+        if(createdNotification){
+            const notification=createdNotification[0];
+            if(notification){
+                await notification.populate({
+                    path:"orderId",
+                    select:"productId quantity totalPrice status",
+                    populate:{
+                        path:"productId",
+                        select:"name images category"
+                    }
+                })
+                const io=getIO();
+                console.log("Emitting Stripe notification to:",notification.userId.toString());
+                io.to(notification.userId.toString()).emit("receive-notification",notification);
+            }
+            
+        }
+
         return res.status(200).json({received:true});
     }catch(err){
         console.error("Stripe webhook processing failed",err);

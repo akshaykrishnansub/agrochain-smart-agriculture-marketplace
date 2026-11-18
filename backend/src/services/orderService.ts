@@ -1,5 +1,6 @@
 import Order from "../models/Order.js";
 import Product from "../models/Product.js"
+import { createNotification } from "./notificationServices.js";
 
 type OrderStatus="PENDING"|"CONFIRMED"|"PROCESSING"|"SHIPPED"|"DELIVERED"|"CANCELLED";
 
@@ -34,6 +35,8 @@ const createOrder=async(
     product.stock=product.stock-quantity; //calculate stock value after order is created
     await product.save(); // update the stock value in database
 
+    await createNotification(product.ownerId.toString(),"You have received a new order","ORDER_PLACED",order._id.toString());
+
     return order;
 }
 
@@ -67,7 +70,11 @@ const updateOrderStatus=async(orderId:string,userId:string,role:string,status:Or
     }
     if(role==="admin"){
         order.status=status;
-        return await order.save();
+        await order.save();
+
+        await createNotification(order.buyerId.toString(),`Your order status has been changed to ${status}`,"ORDER_UPDATED",order._id.toString());
+
+        return order;
     }
     if(role==="farmer"||role==="supplier"){
         const product=await Product.findOne({
@@ -80,7 +87,11 @@ const updateOrderStatus=async(orderId:string,userId:string,role:string,status:Or
         }
 
         order.status=status;
-        return await order.save();
+        await order.save();
+
+        await createNotification(order.buyerId.toString(),`Your order status has been updated to ${status}`,"ORDER_UPDATED",order._id.toString());
+
+        return order;
     }
 
     throw new Error("Access Denied");

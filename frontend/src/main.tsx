@@ -20,6 +20,7 @@ import AdminUsers from './pages/AdminUsers.tsx'
 import AdminProducts from './pages/AdminProducts.tsx'
 import AdminOrders from './pages/AdminOrders.tsx'
 import AdminCertifications from './pages/AdminCertifications.tsx'
+import './socket.ts'
 
 const router=createBrowserRouter([
   {
