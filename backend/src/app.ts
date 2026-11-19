@@ -17,6 +17,7 @@ import notificationRoutes from './routes/notificationRoutes.js'
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { setIO } from './config/socket.js';
+import redis from './config/redis.js';
 
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
@@ -75,7 +76,9 @@ const PORT=process.env.PORT || 5000;
 
 
 connectDB()
-    .then(()=>{
+    .then(async()=>{
+        await redis.ping();
+
         httpServer.listen(PORT,()=>{
             console.log(`Server running on port ${PORT}`);
         })

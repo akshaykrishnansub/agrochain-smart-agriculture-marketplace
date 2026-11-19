@@ -1,14 +1,16 @@
 import { Router } from "express";
-import { login, register } from "../controllers/authController.js";
+import { login, logout, register } from "../controllers/authController.js";
 import {authenticateToken} from "../middleware/auth.middleware.js";
 import type {AuthRequest} from '../middleware/auth.middleware.js'
 import { checkRole } from "../middleware/rbac.middleware.js";
 import { getProfile, updateProfile } from "../controllers/userController.js";
+import { loginRateLimiter } from "../middleware/rateLimit.middleware.js";
 
 const router=Router();
 
 router.post('/register',register);
-router.post('/login',login);
+router.post('/login',loginRateLimiter,login);
+router.post('/logout',authenticateToken,logout);
 
 router.get("/profile",authenticateToken,getProfile);
 

@@ -1,6 +1,15 @@
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import Certification from "../models/Certification.js";
+import redis from '../config/redis.js';
+
+//cache invalidation
+const clearProductCache=async()=>{
+    const keys=await redis.keys("products:*");
+    if(keys.length>0){
+        await redis.del(...keys);
+    }
+}
 
 const createProduct=async(productData:{
 name:string;
@@ -25,6 +34,8 @@ location:string;
             }))
         )
     }
+
+    await clearProductCache();
     return product;
 }
 
@@ -73,10 +84,19 @@ const updateProduct=async(productId:string,
             )
         }
     }
+
+    await clearProductCache();
     return updatedProduct;
 }
 
 const getAllProducts=async(search?:string,location?:string,certification?:string,minPrice?:string,maxPrice?:string)=>{
+    const cacheKey=`products:${JSON.stringify({search,location,certification,minPrice,maxPrice})}`;
+    const cachedProducts=await redis.get(cacheKey);
+
+    if(cachedProducts){
+        console.log("Products fetched from redis");
+        return JSON.parse(cachedProducts);
+    }
     const filters:any={};
 
     if(search){
@@ -102,7 +122,14 @@ const getAllProducts=async(search?:string,location?:string,certification?:string
             filters.price.$lte=Number(maxPrice);
         }
     }
-    return await Product.find(filters).populate("ownerId","name email role");
+    const products=await Product.find(filters).populate("ownerId","name email role");
+
+    await redis.set(cacheKey,JSON.stringify(products));
+
+    console.log("Products fetched from MongoDB");
+
+    return products;
+
 }
 
 const getProductById=async(productId:string)=>{
@@ -130,6 +157,8 @@ const deleteProduct=async(productId:string,ownerId:string)=>{
     if(existingOrder){
         throw new Error("Cannot delete the product because orders already exist on this product");
     }
+
+    await clearProductCache();
 
     return await Product.findOneAndDelete({_id:productId,ownerId:ownerId})
 }
