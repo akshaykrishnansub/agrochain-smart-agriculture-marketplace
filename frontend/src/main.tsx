@@ -20,6 +20,7 @@ import AdminUsers from './pages/AdminUsers.tsx'
 import AdminProducts from './pages/AdminProducts.tsx'
 import AdminOrders from './pages/AdminOrders.tsx'
 import AdminCertifications from './pages/AdminCertifications.tsx'
+import Profile from './pages/Profile.tsx'
 import './socket.ts'
 
 const router=createBrowserRouter([
@@ -83,6 +84,11 @@ const router=createBrowserRouter([
       {path:"/admin-certifications",element:(
         <ProtectedRoute allowedRoles={["admin"]}>
           <AdminCertifications />
+        </ProtectedRoute>
+      )},
+      {path:'/profile',element:(
+        <ProtectedRoute allowedRoles={["admin","buyer","farmer","supplier"]}>
+          <Profile/>
         </ProtectedRoute>
       )}
     ]
