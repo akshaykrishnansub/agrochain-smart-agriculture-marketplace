@@ -39,7 +39,27 @@ const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps)
   const [showNotifications,setShowNotifications]=useState<boolean>(false);
   const {notifications,markAsRead}=useOutletContext<{notifications:Notification[];markAsRead:(notificationId:string)=>Promise<void>}>()
   const unreadCount=notifications.filter((notification)=>!notification.isRead).length;
-  const {isAuthenticated}=useAuth();
+  const {isAuthenticated,setUser}=useAuth();
+
+  const handleLogout=async()=>{
+    try{
+      const res=await fetch(`http://localhost:5000/api/auth/logout`,{
+        method:"POST",
+        credentials:"include"
+      })
+
+      const data=await res.json();
+      if(!res.ok){
+        throw new Error(data.message || "Failed to Logout");
+      }
+
+      setUser(null);
+      setShowNotifications(false);
+      navigate("/login");
+    }catch(err){
+      console.error(err);
+    }
+  }
 
   return (
     <nav className="flex justify-center items-center bg-green-900 p-4 top-0 h-16 left-0 w-full fixed">
@@ -81,6 +101,10 @@ const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps)
             </span>
           )}
         </button>
+        )}
+
+        {isAuthenticated && (
+          <button onClick={handleLogout} className="text-white cursor-pointer">Logout</button>
         )}
         
         
