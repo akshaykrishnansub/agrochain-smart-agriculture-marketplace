@@ -71,7 +71,7 @@ const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps)
             {leftSlot}
         </div>
       {/*RIGHT SLOT */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         {showLogin && (
           <Link to="/login" className="text-white font-semibold text-sm">Login</Link>
         )}

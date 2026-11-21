@@ -17,7 +17,7 @@ interface BuyerOrder{
    quantity:number;
    totalPrice:number;
   status:"PENDING"|"CONFIRMED"|"PROCESSING"|"SHIPPED"|"DELIVERED"|"CANCELLED";
-   paymentStatus:"PAID"|"PENDING"|"FAILED"|"REFUNDED";
+   paymentStatus:"PAID"|"PENDING"|"FAILED"|"REFUND_PENDING"|"REFUNDED";
    createdAt:string;
 }
 
@@ -50,6 +50,25 @@ const MyOrders = () => {
     }
     fetchOrders();
   },[])
+
+
+  const handleCancelOrder=async(orderId:string)=>{
+    try{
+      const res=await fetch(`http://localhost:5000/api/orders/${orderId}/cancel`,{
+        method:"PATCH",
+        credentials:"include"
+      })
+
+      const data=await res.json();
+      if(!res.ok){
+        throw new Error(data.message || "Failed to cancel order");
+      }
+
+      setOrders((prevOrders)=>prevOrders.map((order)=>order._id===orderId?data.order:order));
+    }catch(err){
+      console.error(err);
+    }
+  }
 
   return (
     <>
@@ -90,6 +109,9 @@ const MyOrders = () => {
                   <p><span className="font-bold text-sm">Created At:{" "}</span>{new Date(order.createdAt).toLocaleDateString("en-IN")}</p>
                 </div>
               </div>
+              {["PENDING","CONFIRMED","PROCESSING"].includes(order.status) && (
+                <button onClick={()=>handleCancelOrder(order._id)} className="bg-red-950 p-2 mt-4 text-white rounded-lg hover:bg-red-800">Cancel Order</button>
+              )}
             </div>
           ))}
         </div>

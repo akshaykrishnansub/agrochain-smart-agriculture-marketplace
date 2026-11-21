@@ -22,6 +22,7 @@ const Checkout = () => {
   const [searchParams]=useSearchParams();
   const payment=searchParams.get("payment");
   const sessionId=searchParams.get("session_id");
+  const orderId=searchParams.get("orderId");
   const [paymentReturnStatus,setPaymentReturnStatus]=useState<"none"|"verifying"|"success"|"cancelled"|"pending"|"failed">("none")
 
   const {productId:stateProductId,quantity:stateQuantity}=location.state||{};
@@ -69,9 +70,28 @@ const Checkout = () => {
     }
 
     //Handle a cancelled stripe checkout session
-    if(payment==="cancelled"){
-      setPaymentReturnStatus("cancelled");
-      setLoading(false);
+    if(payment==="cancelled" && orderId){
+      const cancelCheckout=async()=>{
+        setLoading(false);
+        try{
+          const res=await fetch(`http://localhost:5000/api/orders/checkout/${orderId}/cancel`,{
+            method:"PATCH",
+            credentials:"include"
+          })
+
+          const data=await res.json();
+
+          if(!res.ok){
+            throw new Error(data.message||"Failed to cancel checkout");
+          }
+
+          setPaymentReturnStatus("cancelled");
+        }catch(err){
+          console.error(err);
+          setPaymentReturnStatus("failed");
+        }
+      }
+      cancelCheckout();
       return;
     }
 
@@ -96,7 +116,7 @@ const Checkout = () => {
       }
     }
     fetchProduct();
-  },[productId,quantity,payment,sessionId])
+  },[productId,quantity,payment,sessionId,orderId])
 
   const handlePayNow=async()=>{
     console.log("Checkout values:", { productId, quantity });
@@ -167,7 +187,7 @@ const Checkout = () => {
         <div className="mt-8 text-center">
           <h2 className="text-xl font-bold">Payment Cancelled</h2>
           <p className="mt-2">Your checkout was cancelled.</p>
-          <button onClick={()=>navigate("/orders",{state:{productId,quantity}})} className="mt-4 rounded bg-blue-950 p-2 text-white hover:bg-blue-800 cursor-pointer">Back to Orders</button>
+          <button onClick={()=>navigate("/my-orders",{state:{productId,quantity}})} className="mt-4 rounded bg-blue-950 p-2 text-white hover:bg-blue-800 cursor-pointer">View My Orders</button>
         </div>
       )}
 

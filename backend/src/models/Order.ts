@@ -28,7 +28,7 @@ const orderSchema=new Schema({
     },
     paymentStatus:{
         type:String,
-        enum:["PENDING","PAID","FAILED","REFUNDED"],
+        enum:["PENDING","PAID","FAILED","REFUND_PENDING","REFUNDED"],
         default:"PENDING"
     },
     paymentInfo:{

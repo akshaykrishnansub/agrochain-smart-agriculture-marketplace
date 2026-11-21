@@ -28,25 +28,53 @@ export const stripeWebhookController=async(req:Request,res:Response)=>{
         return res.status(400).json({message:"Invalid webhook signature"})
     }
 
-    //check payment status
+    //Handle Expired checkout sessions
+    if(event.type==="checkout.session.expired"){
+        const expiredSession=event.data.object as Stripe.Checkout.Session;
+        try{
+            const cancelledOrder=await Order.findOneAndUpdate(
+                {
+                    stripeSessionId:expiredSession.id,
+                    status:"PENDING",
+                    paymentStatus:"PENDING"
+                },
+                {
+                    $set:{
+                        status:"CANCELLED"
+                    }
+                },
+                {
+                    new:true
+                }
+            )
+
+            console.log(cancelledOrder?"Abandoned checkout order cancelled":"No pending order found for expired checkout",expiredSession.id);
+            return res.status(200).json({received:true});
+        }catch(err){
+            console.error("Expired checkout processing failed",err);
+            return res.status(500).json({message:"Webhook processing failed"});
+        }
+    }
+
+    //Ignore events other than checkout.session.completed
     if(event.type!=="checkout.session.completed"){
         return res.status(200).json({received:true});
     }
 
     const checkoutSession=event.data.object as Stripe.Checkout.Session;
 
-    console.log("Checkout session received:", {
-    sessionId: checkoutSession.id,
-    paymentStatus: checkoutSession.payment_status,
-    metadata: checkoutSession.metadata
-    });
+    console.log("checkout session received:",{
+        sessionId:checkoutSession.id,
+        paymentStatus:checkoutSession.payment_status,
+        metadata:checkoutSession.metadata
+    })
 
     if(checkoutSession.payment_status!=="paid"){
-        return res.status(200).json({received:true});
+        return res.status(200).json({received:true})
     }
 
     //Destructuring safely when no metadata is present
-    const {buyerId,productId,quantity:quantityString}=checkoutSession.metadata??{};
+    const {orderId,buyerId,productId,quantity:quantityString}=checkoutSession.metadata??{};
 
     const quantity=Number(quantityString);
 
@@ -58,7 +86,7 @@ export const stripeWebhookController=async(req:Request,res:Response)=>{
     quantityString
 });
 
-    if(!checkoutSession.id||!buyerId||!productId||!Number.isInteger(quantity)||quantity<1||!mongoose.isValidObjectId(buyerId)||!mongoose.isValidObjectId(productId)){
+    if(!checkoutSession.id||!orderId||!buyerId||!productId||!Number.isInteger(quantity)||quantity<1||!mongoose.isValidObjectId(orderId)||!mongoose.isValidObjectId(buyerId)||!mongoose.isValidObjectId(productId)){
         return res.status(400).json("Invalid checkout session metadata");
     }
 
@@ -67,11 +95,24 @@ export const stripeWebhookController=async(req:Request,res:Response)=>{
     try{
         await mongoSession.withTransaction(async()=>{
             const existingOrder=await Order.findOne({
-                stripeSessionId:checkoutSession.id
+                _id:orderId,
+                buyerId,
+                productId,
+                stripeSessionId:checkoutSession.id,
+                status:"PENDING",
+                paymentStatus:"PENDING"
             }).session(mongoSession);
 
-            if(existingOrder){
-                return;
+            if(!existingOrder){
+                const alreadyProcessed=await Order.findOne({
+                    stripeSessionId:checkoutSession.id,
+                    paymentStatus:"PAID"
+                }).session(mongoSession);
+
+                if(alreadyProcessed){
+                    return;
+                }
+                throw new Error("Pending order not found");
             }
 
             const product=await Product.findOneAndUpdate(
@@ -92,28 +133,39 @@ export const stripeWebhookController=async(req:Request,res:Response)=>{
                 throw new Error("Product not found or insufficient stock");
             }
 
-            const orders=await Order.create(
-                [{
-                    buyerId,
-                    productId,
-                    quantity,
-                    totalPrice:checkoutSession.amount_total!/100,
-                    status:"CONFIRMED",
-                    paymentStatus:"PAID",
-                    paymentInfo:{
-                        provider:"stripe",
-                        paymentIntentId:typeof checkoutSession.payment_intent==="string"?checkoutSession.payment_intent:null
-                    },
-                    stripeSessionId:checkoutSession.id
-                }],
-                {session:mongoSession}
+            const updatedOrder=await Order.findOneAndUpdate(
+                {
+                    _id:orderId,
+                    status:"PENDING",
+                    paymentStatus:"PENDING"
+                },
+                {
+                    $set:{
+                        status:"CONFIRMED",
+                        paymentStatus:"PAID",
+                        paymentInfo:{
+                            provider:"stripe",
+                            paymentIntentId:typeof checkoutSession.payment_intent==="string"
+                            ?checkoutSession.payment_intent
+                            :null
+                        }
+                    }
+                },
+                {
+                    new:true,
+                    session:mongoSession
+                }
             )
+
+            if(!updatedOrder){
+                throw new Error("Unable to update order");
+            }
 
             createdNotification=await createNotification(
                 product.ownerId.toString(),
                 "You have received a new order",
                 "ORDER_PLACED",
-                orders[0]!._id.toString(),
+                updatedOrder._id.toString(),
                 mongoSession
             )
         })

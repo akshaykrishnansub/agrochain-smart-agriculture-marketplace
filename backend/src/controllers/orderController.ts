@@ -1,6 +1,6 @@
 import type { AuthRequest } from "../middleware/auth.middleware.js";
 import type { Response } from "express";
-import { createOrder, getOrders, updateOrderStatus } from "../services/orderService.js";
+import { cancelOrder, createOrder, getOrders, updateOrderStatus } from "../services/orderService.js";
 
 export const createOrderController=async(req:AuthRequest,res:Response)=>{
     try{
@@ -61,5 +61,19 @@ export const updateOrderStatusController=async(req:AuthRequest,res:Response)=>{
     }catch(err){
         console.error(err);
         return res.status(500).json({message:'Internal Server Error'});
+    }
+}
+
+export const cancelOrderController=async(req:AuthRequest,res:Response)=>{
+    if(!req.user){
+        return res.status(401).json({message:"Authentication Required"});
+    }
+    try{
+        const {id}=req.params;
+        const order=await cancelOrder(id as string,req.user.userId);
+        return res.status(200).json({message:'Order cancelled successfully',order});
+    }catch(err){
+        console.error(err);
+        return res.status(500).json({message:"Internal Server Error"});
     }
 }
