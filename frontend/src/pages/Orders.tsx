@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 interface Product{
   _id:string;
@@ -28,18 +29,22 @@ const Orders = () => {
   const [loading,setLoading]=useState<boolean>(true);
   const [error,setError]=useState<string>("");
 
+  const {showToast}=useToast();
+
   useEffect(()=>{
     const fetchProduct=async()=>{
       try{
         const res=await fetch(`http://localhost:5000/api/products/${productId}`);
         const data=await res.json();
         if(!res.ok){
-          console.error(data.error);
+          throw new Error(data.message || "Failed to fetch product details");
         }
 
         setProduct(data.product);
       }catch(err){
         console.error(err);
+        setError("Unable to load product details");
+        showToast("Unable to load product details","error");
       }finally{
         setLoading(false);
       }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 
 interface UserStatistics{
@@ -34,6 +35,7 @@ const AdminDashboard = () => {
     const [error,setError]=useState<string>("");
 
     const {isAuthenticated}=useAuth()
+    const {showToast}=useToast();
 
     useEffect(()=>{
         const fetchDashboardData=async()=>{
@@ -51,6 +53,7 @@ const AdminDashboard = () => {
                 setDashboardData(data);
             }catch(err){
                 setError("Unable to load dashboard data");
+                showToast("Unable to load dashboard data","error");
             }finally{
                 setLoading(false);
             }

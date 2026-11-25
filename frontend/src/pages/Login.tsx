@@ -2,11 +2,13 @@ import { Link, useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useState} from "react"
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 
 const Login = () => {
   const [formData,setFormData]=useState({email:"",password:""});
   const {setUser}=useAuth();
+  const {showToast}=useToast();
 
   const navigate=useNavigate();
 
@@ -32,17 +34,23 @@ const Login = () => {
 
       const data=await res.json();
       if(!res.ok){
-        console.error(data.error);
+        showToast(data.message,"error");
+        return;
       }
 
-      console.log("Login Successful");
+      showToast("Login Successful","success");
       setFormData({email:"",password:""});
       setUser(data.user);
-      console.log("isAuthenticated has been set to true");
-      navigate('/products')
+      if(data.user.role==="buyer"){
+        navigate("/products");
+      }else if(data.user.role==="farmer" || data.user.role==="supplier"){
+        navigate("/my-products");
+      }else if(data.user.role==="admin"){
+        navigate("/admin-dashboard");
+      }
 
     }catch(err){
-      console.error(err);
+      showToast("Something went wrong. Please try again","error");
     }
   }
   return (

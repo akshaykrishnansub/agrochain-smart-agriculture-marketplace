@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom"
 import { useAuth } from "./context/AuthContext"
 import { useEffect, useState } from "react";
 import socket from "./socket";
+import Sidebar from "./components/Sidebar";
 
 interface ProductDetails{
   _id:string;
@@ -31,6 +32,8 @@ interface Notification{
 function App() {
   const {user,loading}=useAuth();
   const [notifications,setNotifications]=useState<Notification[]>([]);
+  const [collapsed,setCollapsed]=useState<boolean>(false);
+  const [mobileOpen,setMobileOpen]=useState<boolean>(false);
   console.log("Auth User",user);
   console.log("Auth Loading",loading);
 
@@ -104,7 +107,14 @@ function App() {
 
   return (
     <>
-      <Outlet context={{notifications,markAsRead}} />
+    {
+      user && !loading && (
+        <Sidebar collapsed={collapsed} onToggle={()=>setCollapsed(!collapsed)} mobileOpen={mobileOpen} onClose={()=>setMobileOpen(false)} />
+      )
+    }
+    <div className={user && !loading ?(collapsed?"md:ml-20":"md:ml-64"):""}>
+      <Outlet context={{notifications,markAsRead,setMobileOpen}} />
+    </div>
     </>
   )
 }

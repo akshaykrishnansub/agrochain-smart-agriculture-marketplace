@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Footer from "../components/Footer";
+import { useToast } from "../context/ToastContext";
 
 interface Product{
   _id:string;
@@ -31,7 +32,8 @@ const Products = () => {
   const [maxPrice,setMaxPrice]=useState<string>("");
   const [filtersChanged,setFiltersChanged]=useState<boolean>(false);
 
-  const {isAuthenticated}=useAuth();
+  const {isAuthenticated,user}=useAuth();
+  const {showToast}=useToast();
   const navigate=useNavigate();
   
   useEffect(()=>{
@@ -40,12 +42,13 @@ const Products = () => {
       const res=await fetch(`http://localhost:5000/api/products`);
       const data=await res.json();
       if(!res.ok){
-        console.error(data.error);
+        throw new Error(data.message||"Failed to fetch products");
       }
       setProducts(data.products);
     }catch(err){
       console.error(err);
       setError("Unable to load products.. Try again")
+      showToast("Unable to load products. Try again","error");
     }finally{
       setLoading(false);
     }
@@ -96,6 +99,7 @@ useEffect(()=>{
 
     }catch(err){
       setError("Unable to fetch filtered products");
+      showToast("Unable to fetch filtered products","error");
     }finally{
       setLoading(false);
     }
@@ -186,9 +190,11 @@ useEffect(()=>{
                   <p className="text-2xl font-bold text-green-800 mt-4">₹ {product.price}</p>
                 </div>
               </div>
-              <div className="flex justify-center">
-                <button onClick={()=>navigate(`/products/${product._id}`)} className="p-2 m-2 w-full rounded-lg bg-blue-900 hover:bg-blue-800 cursor-pointer text-white">View Details</button>
-              </div>
+              {user?.role==="buyer" && (
+                <div className="flex justify-center">
+                  <button onClick={()=>navigate(`/products/${product._id}`)} className="p-2 m-2 w-full rounded-lg bg-blue-900 hover:bg-blue-800 cursor-pointer text-white">View Details</button>
+                </div>
+              )}
             </div>
           ))}
         </div>

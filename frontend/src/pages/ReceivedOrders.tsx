@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 
 interface Product{
@@ -41,6 +42,7 @@ const ReceivedOrders = () => {
   const [loading,setLoading]=useState<boolean>(true);
   const [error,setError]=useState<string>("");
   const {isAuthenticated}=useAuth();
+  const {showToast}=useToast();
 
   useEffect(()=>{
     const fetchOrders=async()=>{
@@ -52,12 +54,12 @@ const ReceivedOrders = () => {
 
         const data=await res.json();
         if(!res.ok){
-          console.error(data.message||"Failed to fetch orders");
-          return;
+          throw new Error(data.message||"Failed to fetch orders");
         }
         setOrders(data.orders);
       }catch(err){
         setError("Something went wrong");
+        showToast("Unable to load received orders","error");
       }finally{
         setLoading(false);
       }
@@ -80,14 +82,16 @@ const ReceivedOrders = () => {
 
       const data=await res.json();
       if(!res.ok){
-        console.error(data.message||"Failed to update order status");
-        return;
+        throw new Error(data.message||"Failed to update order status");
       }
 
-      setOrders((currentOrders)=>currentOrders.map((order)=>order._id===orderId?{...order,status:newStatus}:order))
+      setOrders((currentOrders)=>currentOrders.map((order)=>order._id===orderId?{...order,status:newStatus}:order));
+      showToast("Order status updated successfully","success");
 
     }catch(err){
-      console.error("Failed to update order status",err);
+      console.error(err);
+      setError("Something went wrong");
+      showToast("Unable to update order status","error");
     }
   }
 

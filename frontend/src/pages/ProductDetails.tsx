@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 interface Product{
    _id:string;
@@ -27,6 +28,7 @@ const ProductDetails = () => {
   const [loading,setLoading]=useState<boolean>(true);
   const [error,setError]=useState<string>("");
   const [quantity,setQuantity]=useState<number>(1);
+  const {showToast}=useToast();
 
   useEffect(()=>{
     const fetchProduct=async()=>{
@@ -34,11 +36,13 @@ const ProductDetails = () => {
         const res=await fetch(`http://localhost:5000/api/products/${id}`);
         const data=await res.json();
         if(!res.ok){
-          console.error(data.error);
+          throw new Error(data.message || "Failed to fetch products");
         }
         setProduct(data.product);
       }catch(err){
         console.error(err);
+        setError("Unable to load product details");
+        showToast("Unable to load product details","error");
       }finally{
         setLoading(false);
       } 

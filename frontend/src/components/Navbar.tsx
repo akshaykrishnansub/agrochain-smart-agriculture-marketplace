@@ -37,7 +37,7 @@ interface NavbarProps{
 const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps) => {
   const navigate=useNavigate();
   const [showNotifications,setShowNotifications]=useState<boolean>(false);
-  const {notifications,markAsRead}=useOutletContext<{notifications:Notification[];markAsRead:(notificationId:string)=>Promise<void>}>()
+  const {notifications,markAsRead,setMobileOpen}=useOutletContext<{notifications:Notification[];markAsRead:(notificationId:string)=>Promise<void>;setMobileOpen:(open:boolean)=>void;}>();
   const unreadCount=notifications.filter((notification)=>!notification.isRead).length;
   const {isAuthenticated,setUser}=useAuth();
 
@@ -62,11 +62,16 @@ const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps)
   }
 
   return (
-    <nav className="flex justify-center items-center bg-green-900 p-4 top-0 h-16 left-0 w-full fixed">
+    <nav className="flex justify-start items-center bg-green-900 p-4 top-0 h-16 left-0 w-full fixed">
       {/*LEFT SLOT */}
         <h1 className="text-2xl font-bold text-white">
             Agro<span className="text-green-300">Chain</span>
         </h1>
+        {isAuthenticated && (
+          <button onClick={()=>setMobileOpen(true)} className="md:hidden text-white mr-3" aria-label="Open Navigation Menu">
+            ☰
+          </button>
+        )}
         <div className="flex gap-4 mr-auto">
             {leftSlot}
         </div>

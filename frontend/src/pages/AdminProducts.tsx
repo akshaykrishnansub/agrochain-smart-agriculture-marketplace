@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 interface Product{
     _id:string;
@@ -24,6 +25,7 @@ const AdminProducts = () => {
     const [loading,setLoading]=useState<boolean>(true);
     const [error,setError]=useState<string>("");
     const {isAuthenticated}=useAuth();
+    const {showToast}=useToast();
 
     useEffect(()=>{
         const fetchProducts=async()=>{
@@ -41,6 +43,7 @@ const AdminProducts = () => {
                 setProducts(data.products);
             }catch(err){
                 setError("Unable to load products");
+                showToast("Unable to load products","error");
             }finally{
                 setLoading(false);
             }
@@ -64,8 +67,10 @@ const AdminProducts = () => {
             }
 
             setProducts(products=>products.filter((product)=>product._id!==productId));
+            showToast("Product deleted successfully","success");
         }catch(err){
             setError("Unable to delete the product");
+            showToast("Unable to delete the product","error");
         }
     }
     

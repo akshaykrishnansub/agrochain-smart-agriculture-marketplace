@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 interface Order{
     _id:string;
@@ -36,6 +37,7 @@ const AdminOrders = () => {
     const [editingOrderStatus,setEditingOrderStatus]=useState<Order|null>(null);
     const [status,setStatus]=useState<string>("");
     const {isAuthenticated}=useAuth();
+    const {showToast}=useToast();
 
     useEffect(()=>{
         const fetchOrders=async()=>{
@@ -52,8 +54,10 @@ const AdminOrders = () => {
                 }
 
                 setOrders(data.orders);
+
             }catch(err){
                 setError("Unable to fetch orders");
+                showToast("Unable to fetch orders","error");
             }finally{
                 setLoading(false);
             }
@@ -81,8 +85,10 @@ const AdminOrders = () => {
             setOrders(orders.map((order)=>order._id===orderId?{...order,status:status as Order["status"]}:order));
             setShowUpdateOrderModal(false);
             setEditingOrderStatus(null);
+            showToast("Order status updated successfully","success");
         }catch(err){
             setError("Unable to update order status");
+            showToast("Unable to update order status","error");
         }
     }
   return (

@@ -1,9 +1,37 @@
 import { useNavigate } from "react-router-dom"
 import Navbar from "../components/Navbar.jsx"
 import Footer from "../components/Footer.js";
+import { useAuth } from "../context/AuthContext.js";
+import { useEffect, useState } from "react";
+
+interface Product{
+  _id:string;
+  name:string;
+  price:number;
+  images:string[];
+}
 
 const Home = () => {
     const navigate=useNavigate();
+    const {isAuthenticated}=useAuth();
+    const [products,setProducts]=useState<Product[]>([]);
+
+    useEffect(()=>{
+      const fetchProducts=async()=>{
+        try{
+          const res=await fetch(`http://localhost:5000/api/products`);
+          const data=await res.json();
+          if(!res.ok){
+            throw new Error(data.message || "Unable to fetch Products");
+          }
+
+          setProducts(data.products.slice(0,4));
+        }catch(err){
+          console.error(err);
+        }
+      }
+      fetchProducts();
+    },[])
   return (
     <>
     <title>AgroChain - Smart Agriculture Market Place</title>
@@ -49,23 +77,30 @@ const Home = () => {
     <div className="p-8">
       <h1 className="text-center text-4xl font-bold">Marketplace Products</h1>
       <div className="grid lg:grid-cols-4 md:grid-cols-2 mt-4 gap-2">
-        <div className="border p-4">
-          <p>Sample Product 1</p>
-        </div>
-        <div className="border p-4">
-          <p>Sample Product 2</p>
-        </div>
-        <div className="border p-4">
-          <p>Sample Product 3</p>
-        </div>
-        <div className="border p-4">
-          <p>Sample Product 4</p>
-        </div>
+        {products.map((product)=>(
+          <div key={product._id} className="p-4 rounded-lg shadow-lg">
+            {product.images[0]?(
+              <img src={product.images[0]} alt={product.name} className="w-full h-40 object-cover rounded-lg" />
+            ):(
+              <div className="w-full h-40 flex items-center justify-center">
+                No Image Available
+              </div>
+            )}
+            <h2 className="font-bold mt-2">{product.name}</h2>
+            <p className="text-green-800 font-semibold mt-2">₹ {product.price}</p>
+          </div>
+        ))}
       </div>
     </div>
+    {isAuthenticated ? (
+      <Navbar showLogin={false} showSignup={false} />
+    ):(
+      <Navbar />
+    )}
     <Footer/>
     </>
   )
 }
 
 export default Home
+

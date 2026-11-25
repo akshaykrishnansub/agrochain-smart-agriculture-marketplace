@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext"
+import { useToast } from "../context/ToastContext";
 
 interface ProductOwner{
     _id:string;
@@ -44,6 +45,7 @@ const AdminCertifications = () => {
     const [editingCertification,setEditingCertification]=useState<Certification|null>(null);
     const [rejectionReason,setRejectionReason]=useState<string>("");
     const {isAuthenticated}=useAuth();
+    const {showToast}=useToast();
 
     useEffect(()=>{
         const fetchCertification=async()=>{
@@ -62,6 +64,7 @@ const AdminCertifications = () => {
 
             }catch(err){
                 setError("Unable to fetch certifications");
+                showToast("Unable to fetch certifications","error");
             }finally{
                 setLoading(false);
             }
@@ -89,8 +92,10 @@ const AdminCertifications = () => {
             setCertifications(certifications.map((certification)=>(
                 certification._id===certificationId?{...certification,...data.certification}:certification
             )))
+            showToast("Certification approved successfully","success");
         }catch(err){
             setError("Unable to approve certification");
+            showToast("Unable to approve certification","error");
         }
     }
 
@@ -121,9 +126,11 @@ const AdminCertifications = () => {
             setShowRejectModal(false);
             setEditingCertification(null);
             setRejectionReason("");
+            showToast("Certification rejected successfully","success");
 
         }catch(err){
             setError("Unable to reject certification");
+            showToast("Unable to reject certification","error");
         }
     }
 

@@ -22,6 +22,8 @@ import AdminOrders from './pages/AdminOrders.tsx'
 import AdminCertifications from './pages/AdminCertifications.tsx'
 import Profile from './pages/Profile.tsx'
 import './socket.ts'
+import { ToastProvider } from './context/ToastContext.tsx'
+import GuestRoute from './components/GuestRoute.tsx'
 
 const router=createBrowserRouter([
   {
@@ -29,8 +31,16 @@ const router=createBrowserRouter([
     element:<App />,
     children:[
       {path:"/",element:<Home />},
-      {path:"login",element:<Login/>},
-      {path:"register",element:<Register/>},
+      {path:"login",element:(
+      <GuestRoute>
+        <Login/>
+      </GuestRoute>
+      )},
+      {path:"register",element:(
+      <GuestRoute>
+        <Register/>
+      </GuestRoute>
+      )},
       {path:"products",element:<Products/>},
       {path:"products/:id",element:<ProductDetails/>},
       {path:"/orders",element:(
@@ -98,7 +108,9 @@ const router=createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router}/>
+      <ToastProvider>
+        <RouterProvider router={router}/>
+      </ToastProvider>
     </AuthProvider>
   </StrictMode>,
 )

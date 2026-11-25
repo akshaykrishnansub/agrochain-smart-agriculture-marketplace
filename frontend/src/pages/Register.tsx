@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useState } from "react"
+import { useToast } from "../context/ToastContext";
 
 
 const Register = () => {
   const [formData,setFormData]=useState({name:"",email:"",password:"",confirmPassword:""});
+  const {showToast}=useToast();
 
   const handleChange=(event:React.ChangeEvent<HTMLInputElement>)=>{
     const {name,value}=event.target;
@@ -17,6 +19,7 @@ const Register = () => {
   const handleSubmit=async(event:React.FormEvent<HTMLFormElement>)=>{
     event.preventDefault();
     if(formData.password!==formData.confirmPassword){
+      showToast("Passwords don't match","error")
       return;
     }
     console.log(formData);
@@ -32,18 +35,18 @@ const Register = () => {
 
       const data=await res.json();
       if(!res.ok){
-        console.log(data.error);
+        showToast(data.message||data.error,"error");
         return;
       }
-      console.log("Registration Successful");
+      showToast(data.message,"success");
       setFormData({
         name:"",
         email:"",
         password:"",
         confirmPassword:""
       })
-    }catch(err){
-      console.error(err);
+    }catch(error){
+      showToast("Something went wrong. Please try again","error");
     }
   }
 

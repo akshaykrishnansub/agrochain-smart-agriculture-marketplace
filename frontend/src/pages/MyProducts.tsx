@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
  interface Product{
      _id:string;
@@ -21,7 +22,7 @@ const MyProducts = () => {
     const [showModal,setShowModal]=useState<boolean>(false);
     const [editingProduct,setEditingProduct]=useState<Product|null>(null);
     const [showEditModal,setShowEditModal]=useState<boolean>(false)
-
+    const {showToast}=useToast();
     const {isAuthenticated}=useAuth();
 
     const [formData,setFormData]=useState({
@@ -82,9 +83,10 @@ const MyProducts = () => {
                 throw new Error(data.message||"Unable to delete the product");
             }
 
-            setProducts(products.filter(product=>product._id!==productId))
-        }catch(err){
-            console.error(err);
+            setProducts(products.filter(product=>product._id!==productId));
+            showToast("Product deleted successfully","success");
+        }catch(error){
+            showToast("Unable to delete Product","error");
         }
     }
 
@@ -116,7 +118,7 @@ const MyProducts = () => {
                     const data=await res.json();
 
                     if(!res.ok){
-                        console.error(data.message || "Image upload failed");
+                        throw new Error(data.message || "Image upload failed");
                     }
 
                     imageUrls.push(data.fileUrl);
@@ -139,7 +141,7 @@ const MyProducts = () => {
                     const data=await res.json();
 
                     if(!res.ok){
-                        console.error(data.message||"Failed to upload certification");
+                        throw new Error(data.message||"Failed to upload certification");
                     }
 
                     certificationUrls.push(data.fileUrl);
@@ -168,7 +170,7 @@ const MyProducts = () => {
 
             const data=await res.json();
             if(!res.ok){
-                console.error(data.message || "Product update failed");
+                throw new Error(data.message || "Product update failed");
             }
 
             setProducts(products.map((product)=>(
@@ -177,8 +179,9 @@ const MyProducts = () => {
 
             setShowEditModal(false);
             setEditingProduct(null);
-        }catch(err){
-            setError("Something went wrong");
+            showToast("Product updated successfully","success");
+        }catch(error){
+            showToast("Something went wrong","error");
         }
     }
 
@@ -201,7 +204,7 @@ const MyProducts = () => {
 
                     const data=await res.json();
                     if(!res.ok){
-                        console.error(data.message||"File upload failed");
+                        throw new Error(data.message||"File upload failed");
                     }
 
                     urls.push(data.fileUrl);
@@ -231,12 +234,12 @@ const MyProducts = () => {
 
             const data=await res.json();
             if(!res.ok){
-                console.error(data.message||"Product creation failed");
+                throw new Error(data.message||"Product creation failed");
             }
 
             setProducts([...products,data.product]); //keep or preserve the existing products and add a new product
             setShowModal(false);
-
+            showToast("Product Created Successfully","success");
             setFormData({
                 name:"",
                 description:"",
@@ -247,8 +250,8 @@ const MyProducts = () => {
                 images:[],
                 certifications:[]
             })
-        }catch(err){
-            setError("Something went wrong");
+        }catch(error){
+            showToast("Something went wrong","error");
         }
     }
 

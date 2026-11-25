@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 
 interface Product{
   _id:string;
@@ -32,6 +33,7 @@ const Checkout = () => {
   const [loading,setLoading]=useState<boolean>(true);
   const [error,setError]=useState<string>("");
   const {isAuthenticated}=useAuth();
+  const {showToast}=useToast();
 
   //payment states
   const [paymentLoading,setPaymentLoading]=useState<boolean>(false);
@@ -106,11 +108,13 @@ const Checkout = () => {
         const res=await fetch(`http://localhost:5000/api/products/${productId}`);
         const data=await res.json();
         if(!res.ok){
-          console.error(data.error);
+          throw new Error(data.message||"Failed to fetch product");
         }
         setProduct(data.product);
       }catch(err){
         console.error(err);
+        setError("Unable to load product details");
+        showToast("Unable to load product details","error");
       }finally{
         setLoading(false);
       }
@@ -149,7 +153,9 @@ const Checkout = () => {
 
       window.location.href=data.url;
     }catch(err){
-      console.error("Something went wrong",err)
+      console.error("Something went wrong",err);
+      setPaymentError("Unable to start payment. Please try again");
+      showToast("Unable to start payment. Please try again","error");
     }finally{
       setPaymentLoading(false);
     }

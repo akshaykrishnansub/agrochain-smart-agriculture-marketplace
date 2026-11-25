@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import Footer from "../components/Footer";
+import { useToast } from "../context/ToastContext";
 
 interface Product{
    _id:string;
@@ -25,7 +26,7 @@ const MyOrders = () => {
   const [orders,setOrders]=useState<BuyerOrder[]>([]);
   const [loading,setLoading]=useState<boolean>(true);
   const [error,setError]=useState<string>("");
-
+  const {showToast}=useToast();
   const {isAuthenticated}=useAuth();
 
   useEffect(()=>{
@@ -38,12 +39,13 @@ const MyOrders = () => {
 
         const data=await res.json();
         if(!res.ok){
-          console.error(data.message||"Failed to fetch orders");
+          throw new Error(data.message||"Failed to fetch orders");
         }
 
         setOrders(data.orders);
       }catch(err){
         setError("Something went wrong");
+        showToast("Unable to load your orders","error");
       }finally{
         setLoading(false);
       }
@@ -65,8 +67,10 @@ const MyOrders = () => {
       }
 
       setOrders((prevOrders)=>prevOrders.map((order)=>order._id===orderId?data.order:order));
+      showToast("Order cancelled successfully","success");
     }catch(err){
       console.error(err);
+      showToast("Unable to cancel order","error");
     }
   }
 

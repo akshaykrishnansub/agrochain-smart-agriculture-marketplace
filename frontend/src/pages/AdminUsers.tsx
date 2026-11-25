@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext"
+import { useToast } from "../context/ToastContext";
 
 interface User{
     _id:string;
@@ -18,6 +19,7 @@ const AdminUsers = () => {
     const [role,setRole]=useState<string>("");
     const [editingUser,setEditingUser]=useState<User|null>(null)
     const {isAuthenticated}=useAuth();
+    const {showToast}=useToast();
 
     useEffect(()=>{
         const fetchUsers=async()=>{
@@ -35,6 +37,7 @@ const AdminUsers = () => {
                 setUsers(data.users);
             }catch(err){
                 setError("Unable to load users");
+                showToast("Unable to load users","error");
             }finally{
                 setLoading(false);
             }
@@ -64,8 +67,10 @@ const AdminUsers = () => {
             )))
 
             setShowRoleEditModal(false);
+            showToast("User role updated successfully","success");
         }catch(err){
             setError("Unable to update role");
+            showToast("Unable to update user role","error");
         }
     }
 
@@ -86,8 +91,10 @@ const AdminUsers = () => {
             }
 
             setUsers(users.filter((user)=>user._id!==userId));
+            showToast("User deleted successfully","success");
         }catch(err){
             setError("Unable to delete user");
+            showToast("Unable to delete user","error");
         }
     }
 
