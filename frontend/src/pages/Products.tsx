@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Footer from "../components/Footer";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 interface Product{
   _id:string;
@@ -39,7 +40,7 @@ const Products = () => {
   useEffect(()=>{
   const fetchProducts=async()=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/products`);
+      const res=await fetch(`${API_URL}/api/products`);
       const data=await res.json();
       if(!res.ok){
         throw new Error(data.message||"Failed to fetch products");
@@ -88,7 +89,7 @@ useEffect(()=>{
         params.append("maxPrice",maxPrice);
       }
 
-      const res=await fetch(`http://localhost:5000/api/products?${params.toString()}`);
+      const res=await fetch(`${API_URL}/api/products?${params.toString()}`);
       const data=await res.json();
 
       if(!res.ok){

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 interface Product{
     _id:string;
@@ -30,7 +31,7 @@ const AdminProducts = () => {
     useEffect(()=>{
         const fetchProducts=async()=>{
             try{
-                const res=await fetch(`http://localhost:5000/api/admin/products`,{
+                const res=await fetch(`${API_URL}/api/admin/products`,{
                     method:"GET",
                     credentials:"include"
                 })
@@ -56,7 +57,7 @@ const AdminProducts = () => {
             return;
         }
         try{
-            const res=await fetch(`http://localhost:5000/api/admin/products/${productId}`,{
+            const res=await fetch(`${API_URL}/api/admin/products/${productId}`,{
                 method:"DELETE",
                 credentials:"include"
             })

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useOutletContext} from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config";
 
 interface ProductDetails{
   _id:string;
@@ -43,7 +44,7 @@ const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps)
 
   const handleLogout=async()=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/auth/logout`,{
+      const res=await fetch(`${API_URL}/api/auth/logout`,{
         method:"POST",
         credentials:"include"
       })

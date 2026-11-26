@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext"
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 interface ProductOwner{
     _id:string;
@@ -50,7 +51,7 @@ const AdminCertifications = () => {
     useEffect(()=>{
         const fetchCertification=async()=>{
             try{
-                const res=await fetch(`http://localhost:5000/api/admin/certifications`,{
+                const res=await fetch(`${API_URL}/api/admin/certifications`,{
                     method:"GET",
                     credentials:"include"
                 })
@@ -75,7 +76,7 @@ const AdminCertifications = () => {
 
     const handleApprove=async(certificationId:string)=>{
         try{
-            const res=await fetch(`http://localhost:5000/api/admin/certifications/${certificationId}/review`,{
+            const res=await fetch(`${API_URL}/api/admin/certifications/${certificationId}/review`,{
                 method:"PUT",
                 headers:{
                     "Content-Type":"application/json"
@@ -105,7 +106,7 @@ const AdminCertifications = () => {
         }
 
         try{
-            const res=await fetch(`http://localhost:5000/api/admin/certifications/${editingCertification._id}/review`,{
+            const res=await fetch(`${API_URL}/api/admin/certifications/${editingCertification._id}/review`,{
                 method:"PUT",
                 headers:{
                     "Content-Type":"application/json"

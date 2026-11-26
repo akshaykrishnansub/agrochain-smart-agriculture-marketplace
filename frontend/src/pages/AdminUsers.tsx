@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext"
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 interface User{
     _id:string;
@@ -24,7 +25,7 @@ const AdminUsers = () => {
     useEffect(()=>{
         const fetchUsers=async()=>{
             try{
-                const res=await fetch(`http://localhost:5000/api/admin/users`,{
+                const res=await fetch(`${API_URL}/api/admin/users`,{
                     method:"GET",
                     credentials:"include"
                 })
@@ -48,7 +49,7 @@ const AdminUsers = () => {
 
     const handleRoleUpdate=async(userId:string)=>{
         try{
-            const res=await fetch(`http://localhost:5000/api/admin/users/${userId}/role`,{
+            const res=await fetch(`${API_URL}/api/admin/users/${userId}/role`,{
                 method:"PUT",
                 headers:{
                     "Content-Type":"application/json"
@@ -79,7 +80,7 @@ const AdminUsers = () => {
             return;
         }
         try{
-            const res=await fetch(`http://localhost:5000/api/admin/users/${userId}`,{
+            const res=await fetch(`${API_URL}/api/admin/users/${userId}`,{
                 method:"DELETE",
                 credentials:"include"
             })

@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import Footer from "../components/Footer";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 interface Product{
    _id:string;
@@ -32,7 +33,7 @@ const MyOrders = () => {
   useEffect(()=>{
     const fetchOrders=async()=>{
       try{
-        const res=await fetch(`http://localhost:5000/api/orders`,{
+        const res=await fetch(`${API_URL}/api/orders`,{
           method:"GET",
           credentials:"include"
         })
@@ -56,7 +57,7 @@ const MyOrders = () => {
 
   const handleCancelOrder=async(orderId:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/orders/${orderId}/cancel`,{
+      const res=await fetch(`${API_URL}/api/orders/${orderId}/cancel`,{
         method:"PATCH",
         credentials:"include"
       })

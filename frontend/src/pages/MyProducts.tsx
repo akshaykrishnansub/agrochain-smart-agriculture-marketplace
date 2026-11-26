@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
  interface Product{
      _id:string;
@@ -73,7 +74,7 @@ const MyProducts = () => {
 
     const handleDelete=async(productId:string)=>{
         try{
-            const res=await fetch(`http://localhost:5000/api/products/${productId}`,{
+            const res=await fetch(`${API_URL}/api/products/${productId}`,{
                 method:"DELETE",
                 credentials:"include"
             })
@@ -109,7 +110,7 @@ const MyProducts = () => {
                     const uploadData=new FormData();
                     uploadData.append("file",image);
 
-                    const res=await fetch(`http://localhost:5000/api/upload`,{
+                    const res=await fetch(`${API_URL}/api/upload`,{
                         method:"POST",
                         credentials:"include",
                         body:uploadData
@@ -132,7 +133,7 @@ const MyProducts = () => {
                     const uploadData=new FormData();
                     uploadData.append("file",certification);
 
-                    const res=await fetch(`http://localhost:5000/api/upload`,{
+                    const res=await fetch(`${API_URL}/api/upload`,{
                         method:"POST",
                         credentials:"include",
                         body:uploadData
@@ -148,7 +149,7 @@ const MyProducts = () => {
                 }  
             }
 
-            const res=await fetch(`http://localhost:5000/api/products/${editingProduct._id}`,{
+            const res=await fetch(`${API_URL}/api/products/${editingProduct._id}`,{
                 method:"PUT",
                 headers:{
                     "Content-Type":"application/json"
@@ -196,7 +197,7 @@ const MyProducts = () => {
                 for(const file of files){
                     const uploadData=new FormData();
                     uploadData.append("file",file);
-                    const res=await fetch(`http://localhost:5000/api/upload`,{
+                    const res=await fetch(`${API_URL}/api/upload`,{
                         method:"POST",
                         credentials:"include",
                         body:uploadData
@@ -217,7 +218,7 @@ const MyProducts = () => {
             const imageUrls=await uploadFiles(formData.images);
             const certificationUrls=await uploadFiles(formData.certifications);
 
-            const res=await fetch(`http://localhost:5000/api/products`,{
+            const res=await fetch(`${API_URL}/api/products`,{
                 method:"POST",
                 headers:{
                     "Content-Type":"application/json"
@@ -258,7 +259,7 @@ const MyProducts = () => {
     useEffect(()=>{
         const fetchMyProducts=async()=>{
             try{
-                const res=await fetch(`http://localhost:5000/api/products/my-products`,{
+                const res=await fetch(`${API_URL}/api/products/my-products`,{
                     method:"GET",
                     credentials:"include"
                 })

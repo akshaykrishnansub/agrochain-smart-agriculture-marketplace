@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import { useState} from "react"
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 
 const Login = () => {
@@ -23,7 +24,7 @@ const Login = () => {
   const handleSubmit=async(event:React.FormEvent<HTMLFormElement>)=>{
     event.preventDefault();
     try{
-      const res=await fetch(`http://localhost:5000/api/auth/login`,{
+      const res=await fetch(`${API_URL}/api/auth/login`,{
         method:"POST",
         credentials:"include",
         headers:{

@@ -1,4 +1,5 @@
 import { createContext,useContext,useEffect,useState,type ReactNode } from "react";
+import { API_URL } from "../config";
 
 interface User{
     id:string;
@@ -24,7 +25,7 @@ export const AuthProvider=({children}:{children:ReactNode})=>{
     useEffect(()=>{
         const checkAuthentication=async()=>{
             try{
-                const response=await fetch(`http://localhost:5000/api/auth/profile`,{
+                const response=await fetch(`${API_URL}/api/auth/profile`,{
                     method:"GET",
                     credentials:"include"
                 })

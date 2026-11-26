@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 const Profile = () => {
   const [isEditing,setIsEditing]=useState<boolean>(false);
@@ -14,7 +15,7 @@ const Profile = () => {
 
   const handleSave=async(id:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/auth/profile/${id}`,{
+      const res=await fetch(`${API_URL}/api/auth/profile/${id}`,{
         method:"PUT",
         headers:{
           "Content-Type":"application/json"
@@ -45,7 +46,7 @@ const Profile = () => {
       const formData=new FormData();
       formData.append("file",certificationFile);
 
-      const uploadRes=await fetch(`http://localhost:5000/api/upload`,{
+      const uploadRes=await fetch(`${API_URL}/api/upload`,{
         method:"POST",
         credentials:"include",
         body:formData
@@ -57,7 +58,7 @@ const Profile = () => {
         throw new Error(uploadData.message || "Failed to upload certifications");
       }
 
-      const certificationRes=await fetch(`http://localhost:5000/api/users/${user.id}/certifications`,{
+      const certificationRes=await fetch(`${API_URL}/api/users/${user.id}/certifications`,{
         method:"POST",
         headers:{
           "Content-Type":"application/json"

@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar.jsx"
 import Footer from "../components/Footer.js";
 import { useAuth } from "../context/AuthContext.js";
 import { useEffect, useState } from "react";
+import { API_URL } from "../config.js";
 
 interface Product{
   _id:string;
@@ -19,7 +20,7 @@ const Home = () => {
     useEffect(()=>{
       const fetchProducts=async()=>{
         try{
-          const res=await fetch(`http://localhost:5000/api/products`);
+          const res=await fetch(`${API_URL}/api/products`);
           const data=await res.json();
           if(!res.ok){
             throw new Error(data.message || "Unable to fetch Products");

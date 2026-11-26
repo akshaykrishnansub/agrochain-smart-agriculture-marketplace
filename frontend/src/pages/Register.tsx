@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import Navbar from "../components/Navbar"
 import { useState } from "react"
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 
 const Register = () => {
@@ -24,7 +25,7 @@ const Register = () => {
     }
     console.log(formData);
     try{
-      const res=await fetch(`http://localhost:5000/api/auth/register`,{
+      const res=await fetch(`${API_URL}/api/auth/register`,{
         method:"POST",
         credentials:"include",
         headers:{

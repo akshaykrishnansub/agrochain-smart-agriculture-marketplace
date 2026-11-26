@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 interface Order{
     _id:string;
@@ -42,7 +43,7 @@ const AdminOrders = () => {
     useEffect(()=>{
         const fetchOrders=async()=>{
             try{
-                const res=await fetch(`http://localhost:5000/api/admin/orders`,{
+                const res=await fetch(`${API_URL}/api/admin/orders`,{
                     method:"GET",
                     credentials:"include"
                 })
@@ -68,7 +69,7 @@ const AdminOrders = () => {
 
     const handleUpdateOrderStatus=async(orderId:string)=>{
         try{
-            const res=await fetch(`http://localhost:5000/api/admin/orders/${orderId}/status`,{
+            const res=await fetch(`${API_URL}/api/admin/orders/${orderId}/status`,{
                 method:"PUT",
                 headers:{
                     "Content-Type":"application/json"

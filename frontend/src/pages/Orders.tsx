@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 interface Product{
   _id:string;
@@ -34,7 +35,7 @@ const Orders = () => {
   useEffect(()=>{
     const fetchProduct=async()=>{
       try{
-        const res=await fetch(`http://localhost:5000/api/products/${productId}`);
+        const res=await fetch(`${API_URL}/api/products/${productId}`);
         const data=await res.json();
         if(!res.ok){
           throw new Error(data.message || "Failed to fetch product details");

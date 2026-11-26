@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 interface Product{
   _id:string;
@@ -48,7 +49,7 @@ const Checkout = () => {
         setLoading(false);
 
         try{
-          const res=await fetch(`http://localhost:5000/api/orders`,{
+          const res=await fetch(`${API_URL}/api/orders`,{
             credentials:"include"
           });
           
@@ -76,7 +77,7 @@ const Checkout = () => {
       const cancelCheckout=async()=>{
         setLoading(false);
         try{
-          const res=await fetch(`http://localhost:5000/api/orders/checkout/${orderId}/cancel`,{
+          const res=await fetch(`${API_URL}/api/orders/checkout/${orderId}/cancel`,{
             method:"PATCH",
             credentials:"include"
           })
@@ -105,7 +106,7 @@ const Checkout = () => {
     }
     const fetchProduct=async()=>{
       try{
-        const res=await fetch(`http://localhost:5000/api/products/${productId}`);
+        const res=await fetch(`${API_URL}/api/products/${productId}`);
         const data=await res.json();
         if(!res.ok){
           throw new Error(data.message||"Failed to fetch product");
@@ -133,7 +134,7 @@ const Checkout = () => {
     setPaymentError("");
 
     try{
-      const res=await fetch(`http://localhost:5000/api/orders/checkout-session`,{
+      const res=await fetch(`${API_URL}/api/orders/checkout-session`,{
         method:"POST",
         headers:{
           "Content-Type":"application/json",

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 
 interface UserStatistics{
@@ -40,7 +41,7 @@ const AdminDashboard = () => {
     useEffect(()=>{
         const fetchDashboardData=async()=>{
             try{
-                const res=await fetch(`http://localhost:5000/api/admin/dashboard`,{
+                const res=await fetch(`${API_URL}/api/admin/dashboard`,{
                     method:"GET",
                     credentials:"include"
                 })

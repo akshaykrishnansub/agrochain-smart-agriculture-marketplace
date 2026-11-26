@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from "../config";
 
 
 interface Product{
@@ -47,7 +48,7 @@ const ReceivedOrders = () => {
   useEffect(()=>{
     const fetchOrders=async()=>{
       try{
-        const res=await fetch(`http://localhost:5000/api/orders`,{
+        const res=await fetch(`${API_URL}/api/orders`,{
           method:"GET",
           credentials:"include"
         })
@@ -71,7 +72,7 @@ const ReceivedOrders = () => {
   //function to handle status changes
   const handleStatusChanges=async(orderId:string,newStatus:OrderStatus)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/orders/${orderId}/status`,{
+      const res=await fetch(`${API_URL}/api/orders/${orderId}/status`,{
         method:"PUT",
         headers:{
           "Content-Type":"application/json"

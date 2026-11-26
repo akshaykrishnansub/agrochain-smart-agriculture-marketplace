@@ -3,6 +3,7 @@ import { useAuth } from "./context/AuthContext"
 import { useEffect, useState } from "react";
 import socket from "./socket";
 import Sidebar from "./components/Sidebar";
+import { API_URL } from "./config";
 
 interface ProductDetails{
   _id:string;
@@ -39,7 +40,7 @@ function App() {
 
   const markAsRead=async(notificationId:string)=>{
     try{
-      const res=await fetch(`http://localhost:5000/api/notifications/${notificationId}/read`,{
+      const res=await fetch(`${API_URL}/api/notifications/${notificationId}/read`,{
         method:"PATCH",
         credentials:"include"
       })
@@ -87,7 +88,7 @@ function App() {
     }
     const fetchNotifications=async()=>{
       try{
-        const res=await fetch(`http://localhost:5000/api/notifications`,{
+        const res=await fetch(`${API_URL}/api/notifications`,{
           credentials:"include"
         })
 
