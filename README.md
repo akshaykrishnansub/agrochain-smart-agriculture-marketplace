@@ -79,6 +79,18 @@ The application also incorporates payment processing, certification management, 
 
 ---
 
+### Screenshots
+### 1. Home Page
+<img width="1920" height="1080" alt="Screenshot (409)" src="https://github.com/user-attachments/assets/d8853927-ec66-446d-b4eb-ff08f1a66f41" />
+### 2. Marketplace
+<img width="1920" height="1080" alt="Screenshot (410)" src="https://github.com/user-attachments/assets/5f9f8978-5ff2-407b-9e6d-a3be122c9a1c" />
+### 3. Admin Dashboard
+<img width="1920" height="1080" alt="Screenshot (411)" src="https://github.com/user-attachments/assets/c94741b4-db9f-4022-b135-968ccce1d365" />
+### 4. Order Management
+<img width="1920" height="1080" alt="Screenshot (412)" src="https://github.com/user-attachments/assets/759d0819-4b2d-440c-822c-6392a367b006" />
+### 5. Notifications
+<img width="1920" height="1080" alt="Screenshot (413)" src="https://github.com/user-attachments/assets/e6eb7ae5-ee99-45d6-8902-e22e5aec5cfe" />
+
 ## 3. Technology Stack
 
 | Category | Technologies |
