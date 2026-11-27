@@ -75,10 +75,19 @@ function App() {
   useEffect(()=>{
     if(loading || !user)
       return;
-    socket.on("receive-notification",(notification)=>{
-      console.error("buyer notification:",notification);
-      setNotifications((prev)=>[notification,...prev]);
-    })
+
+    const handleNotification=(notification:Notification)=>{
+      console.log("Received Notification:",notification);
+
+      setNotifications((prev)=>[
+        notification,...prev.filter((item)=>item._id!==notification._id)
+      ])
+    }
+    socket.on("receive-notification",handleNotification);
+
+    return ()=>{
+      socket.off("receive-notification",handleNotification);
+    }
 
   },[user,loading])
 
