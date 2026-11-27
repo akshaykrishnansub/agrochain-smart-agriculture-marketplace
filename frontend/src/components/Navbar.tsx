@@ -65,9 +65,9 @@ const Navbar = ({leftSlot,showLogin=true,showSignup=true,rightSlot}:NavbarProps)
   return (
     <nav className="flex justify-start items-center bg-green-900 p-4 top-0 h-16 left-0 w-full fixed">
       {/*LEFT SLOT */}
-        <h1 className="text-2xl font-bold text-white">
+        <Link to="/" className="text-2xl font-bold text-white">
             Agro<span className="text-green-300">Chain</span>
-        </h1>
+        </Link>
         {isAuthenticated && (
           <button onClick={()=>setMobileOpen(true)} className="md:hidden text-white mr-3" aria-label="Open Navigation Menu">
             ☰
